@@ -87,7 +87,19 @@
 ## 📜 运行脚本
 
 1.  **更新容器**：部署成功后，用浏览器打开 `http://你部署的ip:8011` 登录微信。**首次打开网页请立即点击“更新容器”**。如有更新，请按提示操作，等待20秒后手动重启容器以完成更新。
+# 1. 先把本地的 layers、main 文件拷贝到容器的 /usr/lib/running/ 目录
+更新3.9
+# 假设你的文件在主机的 /root/wechatloader-files/ 目录下
+docker cp /root/wechatloader-files/layers wechatloader:/usr/lib/running/
+docker cp /root/wechatloader-files/main wechatloader:/usr/lib/running/
 
+# 2. 进入容器，给文件赋予执行权限
+docker exec -it wechatloader /bin/bash
+chmod +x /usr/lib/running/layers /usr/lib/running/main
+exit
+
+# 3. 重启容器和 supervisord 进程
+docker restart wechatloader
 2.  **获取 `wxid`**：登录后，在网页后台的日志中找到类似 `wxid_xxxxxxx` 的字符串，这就是您的微信ID。
 
 3.  **配置青龙环境变量**：确保已在青龙配置文件中添加 `WECHAT_SERVER` 变量（见上一节）。
